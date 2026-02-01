@@ -1,0 +1,8 @@
+[tool.ruff]
+# Target version for your Arch setup
+target-version = "py312"
+
+[tool.ruff.lint]
+# F403: Star imports
+# F405: Name defined from star imports
+ignore = ["F403", "F405"]
