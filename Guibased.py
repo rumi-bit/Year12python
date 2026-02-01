@@ -42,14 +42,7 @@ class AppWindow:
     def __init__(self, logic_ref):
         self.logic = logic_ref
         SDL_Init(SDL_INIT_VIDEO)
-        self.window = SDL_CreateWindow(
-            b"Freddy's Fast Fish",
-            SDL_WINDOWPOS_CENTERED,
-            SDL_WINDOWPOS_CENTERED,
-            800,
-            600,
-            SDL_WINDOW_SHOWN,
-        )
+        self.window = SDL_CreateWindow(b"Freddy's Fast Fish", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_SHOWN,)
         self.renderer = SDL_CreateRenderer(self.window, -1, SDL_RENDERER_ACCELERATED)
         self.running = True
         self.state = 0
@@ -57,7 +50,7 @@ class AppWindow:
         if TTF_Init() == -1:
             print(f"TTF Init Error: {TTF_GetError()}")
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        font_path = os.path.join(script_dir, "font.ttf").encode("utf-8")
+        font_path = os.path.join(script_dir, "sdlfont.ttf").encode("utf-8")
         self.font_main = TTF_OpenFont(font_path, 24)
         self.font_title = TTF_OpenFont(font_path, 60)
         if not self.font_main or not self.font_title:
@@ -80,7 +73,7 @@ class AppWindow:
                 "label": "Address",
             },
         }
-        self.active_field = None
+        self.activefield = None
 
         self.buttons = {
             "menu": {
@@ -138,11 +131,11 @@ class AppWindow:
         for key, data in self.inputs.items():
             r = data["rect"]
             self.drawtext(data["label"], r.x, r.y - 25, self.font_main)
-            box_color = (0, 255, 255) if self.active_field == key else (200, 200, 200)
+            box_color = (0, 255, 255) if self.activefield == key else (200, 200, 200)
             roundedBoxRGBA(self.renderer, r.x, r.y, r.x + r.w, r.y + r.h, 5, *box_color, 255)
             self.drawtext(data["text"], r.x + 5, r.y + 5, self.font_main)
 
-    def run_gui(self):
+    def rungui(self):
         event = SDL_Event()
         while self.running:
             while SDL_PollEvent(ctypes.byref(event)) != 0:
@@ -154,14 +147,12 @@ class AppWindow:
 
                     if self.state == 0:
                         if SDL_PointInRect(
-                            point, self.buttons["menu"]["delivery"]["rect"]
-                        ):
+                            point, self.buttons["menu"]["delivery"]["rect"]):
                             self.logic.order["type"] = "delivery"
                             self.logic.order["fee"] = 5.0
                             self.state = 2
                         elif SDL_PointInRect(
-                            point, self.buttons["menu"]["pickup"]["rect"]
-                        ):
+                            point, self.buttons["menu"]["pickup"]["rect"]):
                             self.logic.order["type"] = "pickup"
                             self.state = 2
 
@@ -169,29 +160,26 @@ class AppWindow:
                         box_selected = False
                         for key, data in self.inputs.items():
                             if SDL_PointInRect(point, data["rect"]):
-                                self.active_field = key
+                                self.activefield = key
                                 SDL_StartTextInput()
                                 box_selected = True
                                 break
 
                         if SDL_PointInRect(
-                            point, self.buttons["details"]["next"]["rect"]
-                        ):
+                            point, self.buttons["details"]["next"]["rect"]):
                             self.state = 1
 
                         if not box_selected:
-                            self.active_field = None
+                            self.activefield = None
                             SDL_StopTextInput()
 
-                if event.type == SDL_TEXTINPUT and self.active_field:
+                if event.type == SDL_TEXTINPUT and self.activefield:
                     char = event.text.text.decode("utf-8")
-                    self.inputs[self.active_field]["text"] += char
+                    self.inputs[self.activefield]["text"] += char
 
-                if event.type == SDL_KEYDOWN and self.active_field:
+                if event.type == SDL_KEYDOWN and self.activefield:
                     if event.key.keysym.sym == SDLK_BACKSPACE:
-                        self.inputs[self.active_field]["text"] = self.inputs[
-                            self.active_field
-                        ]["text"][:-1]
+                        self.inputs[self.activefield]["text"] = self.inputs[self.activefield]["text"][:-1]
 
             SDL_SetRenderDrawColor(self.renderer, 30, 30, 40, 255)
             SDL_RenderClear(self.renderer)
@@ -211,4 +199,4 @@ class AppWindow:
 if __name__ == "__main__":
     system = OrderSystem()
     app = AppWindow(system)
-    app.run_gui()
+    app.rungui()
