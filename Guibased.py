@@ -1,5 +1,6 @@
 import ctypes
 import os
+import time
 
 os.environ["PYSDL2_DLL_PATH"] = "/usr/lib"
 
@@ -61,6 +62,7 @@ class AppWindow:
                 "rect": SDL_Rect(250, 150, 300, 40),
                 "text": "",
                 "label": "Full Name",
+                "warning": "Invalid name",
             },
             "phone": {
                 "rect": SDL_Rect(250, 250, 300, 40),
@@ -82,6 +84,42 @@ class AppWindow:
             },
             "details": {"next": {"rect": SDL_Rect(200, 500, 400, 50), "text": "Next"}},
         }
+
+    def validator (self, input, x, y, w, h, checktype = (), length = (), size = (), message = None, colour = (255, 0, 0), active = None ):
+
+        if self.activefield == active:
+            for check in checktype:
+                if check == "alpha":
+                    if len(input) > 0 and not input.replace(" ", "").isalpha():
+                        self.drawtext(message, x, y + h + 5, self.font_main, (colour[0], colour[1], colour[2], 255))
+                    else:
+                        print("valid alpha")
+
+                elif check == "digit":
+                    if len(input) > 0 and not input.replace(" ", "").isdigit():
+                        self.drawtext(message, x, y + h + 5, self.font_main, (colour[0], colour[1], colour[2], 255))
+                    else:
+                        print("valid digit")
+            if length:
+                if len(input) > 0 and not length[0] < len(input.replace(" ", "")) < length[1]:
+                    self.drawtext(message, x, y + h + 5, self.font_main, (colour[0], colour[1], colour[2], 255))
+                else:
+                    print("valid")
+
+            if size:
+                try:
+                    if len(input) > 0 and not size[0] < int(input) < size[1]:
+                        self.drawtext(message, x + w, y + h, self.font_main, (colour[0], colour[1], colour[2], 255))
+                except ValueError:
+                    print("Value error not sure how you achieved this?")
+
+
+
+
+
+
+
+
 
     def drawtext(self, text, x, y, font_ref, color=(255, 255, 255)):
         if not text or not font_ref:
@@ -135,6 +173,15 @@ class AppWindow:
             roundedBoxRGBA(self.renderer, r.x, r.y, r.x + r.w, r.y + r.h, 5, *box_color, 255)
             self.drawtext(data["text"], r.x + 5, r.y + 5, self.font_main)
 
+        if self.activefield == "name":
+            if len(self.inputs["name"]["text"]) > 0 and not self.inputs["name"]["text"].replace(" ", "").isalpha():
+                r = self.inputs["name"]["rect"]
+                self.drawtext(self.inputs["name"]["warning"], r.x + 30, r.y + 40, self.font_main)
+                print("warning drawn")
+
+            else:
+                print("not drawn")
+
     def rungui(self):
         event = SDL_Event()
         while self.running:
@@ -173,9 +220,11 @@ class AppWindow:
                             self.activefield = None
                             SDL_StopTextInput()
 
+
                 if event.type == SDL_TEXTINPUT and self.activefield:
                     char = event.text.text.decode("utf-8")
                     self.inputs[self.activefield]["text"] += char
+
 
                 if event.type == SDL_KEYDOWN and self.activefield:
                     if event.key.keysym.sym == SDLK_BACKSPACE:
