@@ -101,15 +101,15 @@ class AppWindow:
                     else:
                         print("valid digit")
             if length:
-                if len(input) > 0 and not length[0] < len(input.replace(" ", "")) < length[1]:
+                if len(input) > 0 and not length[0] <= len(input.replace(" ", "")) <= length[1]:
                     self.drawtext(message, x, y + h + 5, self.font_main, (colour[0], colour[1], colour[2], 255))
                 else:
                     print("valid")
 
             if size:
                 try:
-                    if len(input) > 0 and not size[0] < int(input) < size[1]:
-                        self.drawtext(message, x + w, y + h, self.font_main, (colour[0], colour[1], colour[2], 255))
+                    if len(input) > 0 and not size[0] <= int(input) <= size[1]:
+                        self.drawtext(message, x, y + h + 5, self.font_main, (colour[0], colour[1], colour[2], 255))
                 except ValueError:
                     print("Value error not sure how you achieved this?")
 
