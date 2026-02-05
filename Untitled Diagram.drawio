@@ -56,7 +56,7 @@
         <mxCell id="s4k2mQdYO0LPHNm8mcsz-15" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Data Stores" vertex="1">
           <mxGeometry height="60" width="120" x="830" y="580" as="geometry" />
         </mxCell>
-        <mxCell id="s4k2mQdYO0LPHNm8mcsz-18" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="" vertex="1">
+        <mxCell id="s4k2mQdYO0LPHNm8mcsz-18" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Specific logic" vertex="1">
           <mxGeometry height="60" width="120" x="510" y="580" as="geometry" />
         </mxCell>
       </root>
