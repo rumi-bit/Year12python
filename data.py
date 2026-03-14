@@ -1,10 +1,12 @@
 from dataclasses import dataclass, field
 from typing import List, Optional, Callable, Tuple, Any
 from sdl2 import SDL_Rect
+from main3 import RenderUi
 import ctypes
 
 @dataclass
 class Element:
+    state: str
     id: str
     text: str
     rect: SDL_Rect
@@ -13,9 +15,12 @@ class Element:
     dirty: bool = True
     
     on_click: Optional[Callable] = None
-    on_hover: Optional[Callable] = None
-    bg_color: Optional[Tuple[int, int, int]] = (255, 255, 255)
-    txt_color: Optional[Tuple[int, int, int]] = (0, 0, 0)
+    font: Optional[ctypes.c_void_p] = None
+    txt_colour: Optional[Tuple[int, int, int]] = (0, 0, 0)
+    txt_field: Optional[bool] = False
+    bg_colour: Optional[Tuple[int, int, int]] = (255, 255, 255)
+
+    
     
     
     
@@ -29,15 +34,11 @@ class Fish:
     catagory: str = "normal"
     
     
-@dataclass
-class Ui:
-    state: str
-    buttons: List[Element] = field(default_factory=list)
-    text: List[Element] = field(default_factory=list)
 
 
 
-fishmenu = [
+
+FISHMENU = [
     Fish("Shark"),
     Fish("Flounder"),
     Fish("Cod"),
@@ -54,17 +55,20 @@ fishmenu = [
 
 
 ELEMENTS = [
-    Element("pickup_btn", "Pickup", SDL_Rect(425, 500, 350, 50), 24, None, True, on_click=lambda app: setattr(app.ui, "state", "Pickup")),
-    Element("delivery_btn", "Delivery", SDL_Rect(25, 500, 350, 50), 24, None, True, on_click=lambda app: setattr(app.ui, "state", "Delivery"))
-    Element("header", "Freddy's Fish Shop", SDL_Rect(130, 30, 0, 0), 60, None, True, txt_colour=(255, 255, 255)),
+    Element("home","pickup_btn", "Pickup", SDL_Rect(500, 500, 300, 50), 24, None, dirty = True, on_click=lambda app: setattr(app.ui, "state", "details") , font = None),
+    Element("home","delivery_btn", "Delivery", SDL_Rect(100, 500, 300, 50), 24, None, dirty = True, on_click=lambda app: setattr(app.ui, "state", "details") , font = None),
+    Element("home","header", "Freddy's Fish Shop", SDL_Rect(130, 30, 0, 0), 60, None, dirty = True,on_click=None ,font = None, txt_colour=(255, 255, 255)),
+    Element("details", "details", "Details", SDL_Rect(300, 40, 0, 0), 24, None, dirty = True, on_click=None, font = None),
+    Element("details", "name", "Full Name", SDL_Rect(250, 150, 300, 40), 24, None, dirty = True, on_click=lambda app: setattr(app.events, "active_field", "name"), font = None, txt_field=True),
+    
+
     
     
-    
-    
+  
     
 ]
     
-    
+print(W_HEIGHT, W_WIDTH)
 
     
     
