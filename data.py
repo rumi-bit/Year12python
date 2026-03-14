@@ -25,7 +25,7 @@ class Element:
 @dataclass
 class Fish:
     fish: str
-    price: float
+    price: float = 4.10
     catagory: str = "normal"
     
     
@@ -34,3 +34,38 @@ class Ui:
     state: str
     buttons: List[Element] = field(default_factory=list)
     text: List[Element] = field(default_factory=list)
+
+
+
+fishmenu = [
+    Fish("Shark"),
+    Fish("Flounder"),
+    Fish("Cod"),
+    Fish("Gurnet"),
+    Fish("Hoki"),
+    Fish("Tarakihi"),
+    Fish("Snapper", 7.20, "Deluxe"),
+    Fish("Pink Salmon", 7.20, "Deluxe"),
+    Fish("Tuna", 7.20, "Deluxe"),
+    Fish("Smoked Marlin", 7.20, "Deluxe"),
+    Fish("John Dory", 7.20, "Deluxe"),
+    Fish("Swordfish", 7.20, "Deluxe"),
+]
+
+
+ELEMENTS = [
+    Element("pickup_btn", "Pickup", SDL_Rect(425, 500, 350, 50), 24, None, True, on_click=lambda app: setattr(app.ui, "state", "Pickup")),
+    Element("delivery_btn", "Delivery", SDL_Rect(25, 500, 350, 50), 24, None, True, on_click=lambda app: setattr(app.ui, "state", "Delivery"))
+    Element("header", "Freddy's Fish Shop", SDL_Rect(130, 30, 0, 0), 60, None, True, txt_colour=(255, 255, 255)),
+    
+    
+    
+    
+    
+]
+    
+    
+
+    
+    
+
