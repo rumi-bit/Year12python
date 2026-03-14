@@ -13,6 +13,7 @@ from data import Element, Fish, ELEMENTS, FISHMENU
 
 
 
+
 class OrderSystem:
     def __init__(self, app):
         self.app = app
@@ -81,48 +82,33 @@ class Utilities:
                 element.font = TTF_OpenFont(font_path, element.font_size)
                 if not element.font: print(f"Font Error: {SDL_GetError()}")
         
-        
 
+    
 
 
 
 
 
     def texturing(self, ostate, nstate):
-        
-        
         for item in self.app.get_state_elements(ostate):
             if item.texture != None: SDL_DestroyTexture(item.texture)
             item.texture = None
             item.dirty = True
             
-        
-            
         for item in self.app.get_state_elements(nstate):
-            if item.dirty:
-                sdl_color = SDL_Color(item.txt_colour[0], item.txt_colour[1], item.txt_colour[2], 255)
-                surface = TTF_RenderText_Blended(item.font, item.text.encode("utf-8"), sdl_color)
-                if surface:
-                    texture = SDL_CreateTextureFromSurface(self.app.ui.renderer, surface)
-                    item.texture = texture
-                    item.rect.w, item.rect.h = surface.contents.w, surface.contents.h
-                    SDL_FreeSurface(surface)
-                item.dirty = False
-                
-                
+            item.dirty = True
+
     def element_texturing(self, element):
         if element.dirty:
-            if element.texture != None: SDl_DestroyTexture(element.texture)
+            if element.texture != None: SDL_DestroyTexture(element.texture)
             element.texture = None
             sdl_color = SDL_Color(element.txt_colour[0], element.txt_colour[1], element.txt_colour[2], 255)
             surface = TTF_RenderText_Blended(element.font, element.text.encode("utf-8"), sdl_color)
             if surface:
                 texture = SDL_CreateTextureFromSurface(self.app.ui.renderer, surface)
                 element.texture = texture
-                element.rect.w, element.rect.h = surface.contents.w, surface.contents.h
                 SDL_FreeSurface(surface)
-                return element.dirty == False
-            else: return element.dirty == True
+            element.dirty = False
             
             
 
@@ -134,7 +120,7 @@ class Utilities:
     
     
     
-    def texture_destroy(self): print("hello")
+    
     
     
     
@@ -145,9 +131,8 @@ class RenderUi:
     def __init__(self, app):
         self.app = app
         SDL_Init(SDL_INIT_VIDEO)
-        W_HEIGHT = 600
-        W_WIDTH = 800
-        self.window = SDL_CreateWindow(b"Freddy's Fast Fish", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, W_WIDTH, W_HEIGHT, SDL_WINDOW_SHOWN)
+        INPUT_W, INPUT_H = 800, 600
+        self.window = SDL_CreateWindow(b"Freddy's Fast Fish", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, INPUT_W, INPUT_H, SDL_WINDOW_SHOWN)
         self.renderer = SDL_CreateRenderer(self.window, -1, SDL_RENDERER_ACCELERATED)
         self.running = True
         self._state = "home"
@@ -180,15 +165,19 @@ class RenderUi:
 
     def elementrender(self): 
         for render in self.app.get_state_elements(self.state):
-            if not render.dirty and render.texture != None:
-                roundedBoxRGBA(self.app.ui.renderer, render.rect.x, render.rect.y, render.rect.x + render.rect.w, render.rect.y + render.rect.h, 12, 255, 0, 0, 255)
-                SDL_RenderCopy(self.app.ui.renderer, render.texture, None, render.rect)
-                
-            elif render.dirty:
+            if render.on_click != None:
+                roundedBoxRGBA(self.app.ui.renderer, render.rect.x, render.rect.y, render.rect.x + render.rect.w, render.rect.y + render.rect.h, 12, 50, 50, 50, 50)
+            
+           
+            if render.dirty:
                 self.app.utils.element_texturing(render)
                 render.dirty = False
-                if render.texture: 
-                    SDL_RenderCopy(self.app.ui.renderer, render.texture, None, render.rect)
+            
+            if render.texture:
+                if render.txt_field and render.txt_offset:
+                    SDL_RenderCopy(self.app.ui.renderer, render.texture, None, SDL_Rect(render.rect.x + render.txt_offset[0], render.rect.y + render.txt_offset[1], render.rect.w, render.rect.h))
+                else:
+                    SDL_RenderCopy(self.app.ui.renderer, render.texture, None, SDL_Rect(render.rect.x + 20, render.rect.y, render.rect.w - 50, render.rect.h ))
 
                 
                 
